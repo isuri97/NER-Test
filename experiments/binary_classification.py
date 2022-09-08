@@ -1,23 +1,25 @@
 import pandas as pd
 import numpy as np
+import torch.cuda
 from sklearn.model_selection import train_test_split
+
+from classification.classification_model import ClassificationModel
 from classification.common.denial_config import args
 from classification.util.label_converter import decode
 
-from classification import ClassificationModel
 
 
 
 #read data file and label each sentence as holocaust denial or either confirm
-from classification.util.print_stat import print_information
 
-confirm_data = pd.read_csv('/home/isuri/PycharmProjects/NER-Test/data/confirm.txt',sep='delimiter', header=None)
+
+confirm_data = pd.read_csv('../NER-Test/data/confirm.txt',sep='delimiter', header=None)
 confirm_data = confirm_data.rename(columns = {0:'text'})
-confirm_data['label'] = 1
+confirm_data['labels'] = 1
 
-denial_data= pd.read_csv('/home/isuri/PycharmProjects/NER-Test/data/denial.txt',sep='delimiter', header=None)
+denial_data= pd.read_csv('../NER-Test/data/denial.txt',sep='delimiter', header=None)
 denial_data=denial_data.rename(columns = {0:'text'})
-denial_data['label'] = 0
+denial_data['labels'] = 0
 
 data = confirm_data.append(denial_data, ignore_index=True)
 data.to_csv('new.csv')
@@ -27,8 +29,8 @@ print(data.columns)
 
 X_train, X_test = train_test_split(data, test_size=0.1)
 
-X_train.columns = ["text", "label"]
-X_test.columns = ["text", "label"]
+X_train.columns = ["text", "labels"]
+X_test.columns = ["text", "labels"]
 
 # define hyperparameter
 train_args ={"reprocess_input_data": True,
@@ -36,8 +38,9 @@ train_args ={"reprocess_input_data": True,
              "use_cuda":False,
              "num_train_epochs": 4}
 
+print(torch.cuda.is_available())
 model = ClassificationModel(
-    "bert", "bert-base-cased", use_cuda=False, args={'fp16': False, 'num_train_epochs': 1, 'learning_rate': 1e-5}
+    "bert", "bert-base-cased", use_cuda=torch.cuda.is_available(), args={'fp16': False, 'num_train_epochs': 1, 'learning_rate': 1e-5}
 )
 
 
