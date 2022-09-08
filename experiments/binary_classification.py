@@ -30,8 +30,14 @@ X_train, X_test = train_test_split(data, test_size=0.1)
 X_train.columns = ["text", "label"]
 X_test.columns = ["text", "label"]
 
+# define hyperparameter
+train_args ={"reprocess_input_data": True,
+             "fp16":False,
+             "use_cuda":False,
+             "num_train_epochs": 4}
+
 model = ClassificationModel(
-    "roberta", "roberta-base", args=args
+    "bert", "bert-base-cased", use_cuda=False, args={'fp16': False, 'num_train_epochs': 1, 'learning_rate': 1e-5}
 )
 
 

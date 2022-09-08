@@ -3,7 +3,7 @@ args = {
     'output_dir': 'temp_olid/outputs/',
     "best_model_dir": "temp_olid/outputs/best_model",
     'cache_dir': 'temp_olid/cache_dir/',
-
+    'use_cuda': True,
     "early_stopping": True,
     "early_stopping_min_delta" : 0.0001,
     "early_stopping_patience": 10,
@@ -30,5 +30,7 @@ args = {
 
     'test_batch_size': 128,
     'train_batch_size': 128,
+
+
 
 }
